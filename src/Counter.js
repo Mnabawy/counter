@@ -1,48 +1,43 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
 
-class Counter extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            count: 0
-        }
-
-        this.increment = this.increment.bind(this);
-        this.decrement = this.decrement.bind(this);
-        this.reset = this.reset.bind(this);
-    }
-
-    increment = () => {
-        this.setState({ count: this.state.count + 1 });
-    }
-
-    decrement = () => {
-        this.setState({
-            count: this.state.count - 1
-        })
-
-    }
-
-    reset = (count) => {
-        this.setState({
-            count: 0
-        })
-    }
-
-    render() {
-        const { count } = this.state;
-
-        return (
-            <div className='counter'>
-                <div className='number'>{count}</div>
-                <button onClick={this.increment}>increment</button>
-                <button onClick={this.decrement}>decrement</button>
-                <button onClick={this.reset}>reset</button>
-            </div>
-        )
-    }
+const storeStateInLocalStorage = count => {
+    localStorage.setItem('counterState', JSON.stringify({ count }))
+    console.log(localStorage);
 }
+
+const getStateFromLocalStorage = () => {
+    localStorage.getItem('counterState')
+}
+
+const Counter = ({ max, step }) => {
+
+    const [count, setCount] = useState(getStateFromLocalStorage());
+
+    const increment = () => {
+
+        setCount(c => {
+            if (c >= max) return c;
+            return c + step;
+        });
+    }
+    const decrement = () => setCount(count - 1);
+    const reset = () => setCount(0);
+
+
+    useEffect(() => {
+        document.title = `Counter: ${count}`
+        storeStateInLocalStorage(count);
+    }, [count])
+    return (
+        <div className='counter'>
+            <div className='number'>{count}</div>
+            <button onClick={increment}>increment</button>
+            <button onClick={decrement}>decrement</button>
+            <button onClick={reset}>reset</button>
+        </div>
+    )
+}
+
 
 export default Counter;
