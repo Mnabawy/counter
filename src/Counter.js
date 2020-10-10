@@ -16,25 +16,26 @@ const useLocalStorage = (initialState, key) => {
     const get = () => {
         const storage = localStorage.getItem(key)
         console.log(localStorage, storage);
-        if (storage) return JSON.parse(storage)[value];
+        if (storage) return (
+            JSON.parse(storage)[key]
+        )
         return initialState;
     }
 
-    const [value, setValue] = useState(get())
+    const [value, setValue] = useState(get()) //decaration of the value variable 
 
     useEffect(() => {
         localStorage.setItem(key, JSON.stringify({ value }))
     }, [value])
+
     return [value, setValue];
 }
-
 
 const Counter = ({ max, step }) => {
 
     const [count, setCount] = useLocalStorage(0, 'count')
 
     const increment = () => {
-
         setCount(c => {
             if (c >= max) return c;
             return c + step;
@@ -44,7 +45,6 @@ const Counter = ({ max, step }) => {
     const decrement = () => setCount(count - 1);
     const reset = () => setCount(0);
 
-
     useEffect(() => {
         document.title = `Counter: ${count}`
     }, [count])
@@ -52,7 +52,7 @@ const Counter = ({ max, step }) => {
     useEffect(() => {
         storeStateInLocalStorage(count);
     })
-    
+
     return (
         <div className='counter'>
             <div className='number'>{count}</div>
